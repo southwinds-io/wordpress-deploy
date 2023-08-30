@@ -1,0 +1,33 @@
+---
+# this file defines the configuration required by the wordpress service
+# it is technology-agnostic, that is, it is not written for a specific container orchestration technology
+
+# the name of the service
+name: wordpress
+# a brief description for any operator to know what the service is about
+description: wordpress web site builder service
+# one or more ports used by the service, in this case on port 80 is required
+port:
+  ui: "80"
+# a list of variables that are required by the service to work
+var:
+  - name: WORDPRESS_DB_HOST
+    description: the URI used by word-press to connect to the mysql database
+    # note the value below is dynamically calculated by artisan
+    value: "${bind=mysql}:${bind=mysql:port[db]}"
+  - name: WORDPRESS_DB_USER
+    description: the username used by word-press to connect to the mysql database
+    # note the value below is dynamically calculated by artisan using a binding expression
+    # the binding expression instructs artisan to find the variable MYSQL_USER in the service "mysql" and replace it below
+    value: "${bind=mysql:var:MYSQL_USER}"
+  - name: WORDPRESS_DB_PASSWORD
+    description: the password used by word-press to connect to the mysql database
+    # equally, the binding expression instructs artisan to find the variable MYSQL_PASSWORD in the service "mysql" and replace it below
+    value: "${bind=mysql:var:MYSQL_PASSWORD}"
+    secret: true
+# folders are file system mount points used by the service
+folder:
+  - name: wordpress-persistent-storage
+    path: /var/www/html
+    size: ${WORDPRESS_STORAGE_GB}Gi
+...

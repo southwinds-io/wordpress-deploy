@@ -1,0 +1,24 @@
+---
+# this file automates the retrieval of docker images from public registries, re-tagging and pushing to a private registry
+# it also separates images by architecture and assign a different tag to them
+# NOTE: this script requires docker
+env:
+  TGT_REGISTRY: registry.southwinds.io
+  PROD_VER: wordpress-6.2
+  ARM_TAG: arm64
+  AMD_TAG: amd64
+
+  MYSQL_VER: 8.0
+  WORDPRESS_VER: 6.2.1-apache
+
+functions:
+  - name: prep-images
+    run:
+      # mysql
+      - art ctr image copy --platform linux/arm64 mysql:${MYSQL_VER} ${TGT_REGISTRY}/${PROD_VER}/mysql:${MYSQL_VER}-${ARM_TAG}
+      - art ctr image copy --platform linux/amd64 mysql:${MYSQL_VER} ${TGT_REGISTRY}/${PROD_VER}/mysql:${MYSQL_VER}-${AMD_TAG}
+
+      # wordpress
+      - art ctr image copy --platform linux/arm64 wordpress:${WORDPRESS_VER} ${TGT_REGISTRY}/${PROD_VER}/wordpress:${WORDPRESS_VER}-${ARM_TAG}
+      - art ctr image copy --platform linux/amd64 wordpress:${WORDPRESS_VER} ${TGT_REGISTRY}/${PROD_VER}/wordpress:${WORDPRESS_VER}-${AMD_TAG}
+...

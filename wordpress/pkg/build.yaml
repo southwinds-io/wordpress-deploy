@@ -1,0 +1,94 @@
+---
+env:
+  PROD_VER: wordpress-6.2
+
+x:
+  # enforces the version of the K plugin
+  k: 1.1
+
+input:
+  var:
+    - name: IMG_REG_URI
+      description: |
+        the URI of the container image registry used to pull the wordpress installation images
+
+    - name: IMG_REG_USER
+      description: |
+        the username required to authenticate with the container image registry containing the wordpress installation images
+
+    - name: DOMAIN
+      description: |
+        the domain under which the application will be deployed
+        for example: if the domain was test.acme.com then the wordpress will be available from wp.test.acme.com
+
+    - name: CERT_ISSUER
+      description: |
+        the certificate issuer used to create a TLS certificate for the wordpress endpoint
+        if no issuer is set, then no issuer is used
+        a certificate issuer must already be installed in the cluster before you can set this value
+
+    - name: NAMESPACE
+      description: |
+        the kubernetes namespace where wordpress will be deploy
+      default: "wordpress"
+
+  secret:
+    - name: IMG_REG_PASS
+      description: |
+        the password required to authenticate with the container image registry containing the wordpress installation images
+        if no password is specified, then unauthenticated registry access is used
+
+functions:
+  - name: generate-manifests
+    export: true
+    description: |
+      generates kubernetes manifests required to deploy wordpress
+      all resource manifests are generated within the wordpress-manifests folder in the user's working directory
+      use this function to test the output of the deployment, it is a dry run
+    run:
+      - art k deploy --dry -n ${NAMESPACE} -p ${ART_EXE_WD}/wordpress-manifests app.yaml
+    # specifies the inputs required by this function
+    input:
+      var:
+        - IMG_REG_URI
+        - IMG_REG_USER
+        - DOMAIN
+        - CERT_ISSUER
+        - NAMESPACE
+      secret:
+        - IMG_REG_PASS
+
+  - name: deploy
+    export: true
+    description: |
+      deploy wordpress
+    run:
+      - art k deploy -n ${NAMESPACE} app.yaml
+    # specifies the inputs required by this function
+    input:
+      var:
+        - IMG_REG_URI
+        - IMG_REG_USER
+        - DOMAIN
+        - CERT_ISSUER
+        - NAMESPACE
+      secret:
+        - IMG_REG_PASS
+
+  - name: undeploy
+    export: true
+    description: |
+      undeploy wordpress
+    run:
+      - art k remove -n ${NAMESPACE} app.yaml
+    # specifies the inputs required by this function
+    input:
+      var:
+        - IMG_REG_URI
+        - IMG_REG_USER
+        - DOMAIN
+        - CERT_ISSUER
+        - NAMESPACE
+      secret:
+        - IMG_REG_PASS
+...

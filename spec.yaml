@@ -1,0 +1,28 @@
+name: WordPress
+description: |
+  deploys Wordpress on Kubernetes
+author: SouthWinds Tech Ltd
+license: EULA
+version: 6.2.1
+info: |
+  Wordpress 6.2.1 - Apache
+  MySql 8.0
+images:
+  MYSQL_AMD64: registry.southwinds.io/wordpress-6.2/mysql:8.0-amd64
+  MYSQL_ARM64: registry.southwinds.io/wordpress-6.2/mysql:8.0-arm64
+  WORDPRESS_AMD64: registry.southwinds.io/wordpress-6.2/wordpress:6.2.1-apache-amd64
+  WORDPRESS_ARM64: registry.southwinds.io/wordpress-6.2/wordpress:6.2.1-apache-arm64
+packages:
+  ART_X_K_AMD64: artr.gdn/x/linux/amd64/k:1.1
+  ART_X_K_ARM64: artr.gdn/x/linux/arm64/k:1.1
+  WORDPRESS_INSTALLER: wordpress/installer:6.2.1
+run: []
+sums:
+  ART_X_K_AMD64: sha256:1112e9b53605a88f498947a36797eecda015f1389999467b0046ea69618b8068
+  ART_X_K_ARM64: sha256:92c8599a2bbdde195c2372d1fe3b540b5cd08df8b1005cc829d11d37bf44f937
+  MYSQL_AMD64: sha256:933d3f5d3d67d69900407f6541ed82cb5c212a8ef1adbffef1dc99108d9d2301
+  MYSQL_ARM64: sha256:72a6660c55f405c5c829be6886643a68eb320522043cc1087dd5c4adb71c222b
+  WORDPRESS_AMD64: sha256:7985abc6e95b4b2654c737ed90ea15401e8353c50a49a947d1273d4cc100cbe5
+  WORDPRESS_ARM64: sha256:3f606f41a472e77ea312c9d62a47fb906d27a96183228be7ccd0177dc2e2d89e
+  WORDPRESS_INSTALLER: sha256:6b6c121c3d34d479207198f83871d679022d01389793572a1392c0f608c78c4f
+date: 2023-08-30T13:40:32.547915Z

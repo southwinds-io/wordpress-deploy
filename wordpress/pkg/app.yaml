@@ -1,0 +1,49 @@
+---
+# this file is the microservice application manifest for wordpress
+# its role is to aggregate all services required to make wordpress work
+
+# the name of the application
+name: wordpress
+# a description for the application
+description: deployment for wordpress web site builder in Kubernetes
+# the application version, which should match the containing version folder name
+version: 6.2.1
+# one or more deployment profiles.
+# profiles instruct artisan which services should be deployed
+# you can define multiple profiles which contain a different combination of services
+profiles:
+  # in this case we only need a single profile that uses the wordpress and mysql services
+  - name: default
+    description: deploys the wordpress web site builder with a mysql backend
+    services:
+      - name: wordpress
+      - name: mysql
+
+# this is a list of services used by the profiles
+# the services add specific configuration not specified in the service manifests
+# this information is specified as behaviours under the "is" attribute
+services:
+  - name: mysql
+    description: mysql database used by wordpress
+    uri: ./services/mysql.yaml
+    image: IMG_MYSQL
+    port:
+      db: "3306"
+
+  - name: wordpress
+    description: wordpress web site builder service
+    uri: ./services/wordpress.yaml
+    image: IMG_WORDPRESS
+    port:
+      ui: "80"
+    # defines the public behaviour which instructs the artisan K transpiler to generate an ingress for the service
+    # so that it can be accessed from outside the cluster
+    is:
+      public:
+        - port: ui
+          path: /
+          domain: wp.${DOMAIN}{{if exists "CERT_ISSUER"}}
+          ingress: traefik
+          certManIssuer: ${CERT_ISSUER}
+          redirectHTTPS: yes{{end}}
+...

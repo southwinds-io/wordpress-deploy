@@ -1,0 +1,20 @@
+---
+profiles:
+  - name: wordpress
+    description: configuration for the wordpress installer package build
+    author: SouthWinds Tech Ltd
+    license: EULA
+    labels:
+      platform: linux
+      arch: any
+    type: exec
+    target: ./pkg
+
+functions:
+  - name: build-installer
+    description: |
+      builds the wordpress installer package
+    run:
+      - art build -t wordpress/installer:${PRODUCT_VERSION} -p wordpress
+
+...

@@ -1,0 +1,60 @@
+---
+includes:
+  - img.yaml
+
+env:
+  PRODUCT_NAME: wordpress
+  PRODUCT_VERSION: 6.2.1
+
+functions:
+  - name: prepare
+    description: |
+      prepare all required artefacts for the release
+      in this case, it only needs to pull the required images from public docker registries, tag them and push them 
+      to a private registry so that they are available for airgap deployment preparation
+    run:
+      # calls function in img.yaml included file
+      - $(prep-images)
+      # pull all images locally so artisan can export them to s3 later
+      - art release pull -i spec.yaml
+
+  - name: build
+    description: builds the installer package
+    run:
+      # calls the build-installer function in the build file in the wordpress folder
+      - art run build-installer wordpress
+
+  - name: export
+    description: |
+      tarball and upload all artefacts to an s3 bucket
+    run:
+      - art release export -c ${S3_USER}:${S3_PWD} -o ${S3_URI}/${PRODUCT_NAME}/${PRODUCT_VERSION} -ts spec.yaml
+
+  - name: release
+    run:
+      - $(build)
+      - $(export)
+
+  - name: push-packages
+    description: |
+      Pushes local images to the SouthWinds artisan registry
+    run:
+      - art release push -t artr.gdn/pnp -u "admin:${ART_REG_PWD}" ./k3s/spec.yaml
+
+  - name: push-images
+    description: |
+      Pulls public required images, tags them and push them to the SouthWinds registry.
+    run:
+      - $(prep-images)
+
+  - name: pub-installer
+    description: |
+      rebuilds and publishes the installer package only
+    run:
+      - art run pub-installer k3s
+
+  - name: push
+    description: pushes build packages to art registry
+    run:
+      - art run push k3s
+...

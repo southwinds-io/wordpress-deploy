@@ -1,0 +1,15 @@
+---
+# this release specification is used to deploy the application to Kubernetes
+name: WordPress
+description: |
+  deploys Wordpress on Kubernetes
+author: SouthWinds Tech Ltd
+license: EULA
+version: "6.2.1"
+info: |
+  Wordpress 6.2.1 - Apache
+  MySql 8.0
+
+images:
+  IMG_MYSQL: ${IMG_REG_URI}/${PROD_VER}/mysql:8.0-${ART_ARCH}
+  IMG_WORDPRESS: ${IMG_REG_URI}/${PROD_VER}/wordpress:6.2.1-${ART_ARCH}

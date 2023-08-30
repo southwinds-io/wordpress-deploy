@@ -1,0 +1,41 @@
+---
+# this file defines the configuration required by the mysql service
+# it is technology-agnostic, that is, it is not written for a specific container orchestration technology
+
+# the name of the service
+name: mysql
+# a brief description for any operator to know what the service is about
+description: mysql database for wordpress
+# one or more ports used by the service, in this case on port 3306 is required
+port:
+  db: "3306"
+# a list of variables that are required by the service to work
+var:
+  - name: MYSQL_ROOT_PASSWORD
+    description: the root password for mysql database server
+    # note the value below is automatically calculated by artisan
+    # the function expressions instructs artisan to generate a 16 character long password and the false flag prevents the
+    # addition of special characters to the password
+    value: ${fx=pwd:16,false}
+    # by setting the below property to true, instructs artisan to treat the variable as a secret
+    secret: true
+    # set export to true below, prompts artisan to store the value of the secret in a summary secret along with any other
+    # exported values
+    export: true
+  - name: MYSQL_DATABASE
+    value: "wordpress"
+  - name: MYSQL_USER
+    value: "wordpress"
+    export: true
+  - name: MYSQL_PASSWORD
+    secret: true
+    export: true
+    # the function expressions instructs artisan to generate a 16 character long password and the false flag prevents the
+    # addition of special characters to the password
+    value: ${fx=pwd:16,false}
+# folders are file system mount points used by the service
+folder:
+  - name: mysql-persistent-storage
+    path: /var/lib/mysql
+    size: ${MYSQL_STORAGE_GB}Gi
+...
