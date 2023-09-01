@@ -12,4 +12,4 @@ info: |
 
 images:
   IMG_MYSQL: ${IMG_REG_URI}/${PROD_VER}/mysql:8.0-${ART_ARCH}
-  IMG_WORDPRESS: ${IMG_REG_URI}/${PROD_VER}/wordpress:6.2.1-${ART_ARCH}
+  IMG_WORDPRESS: ${IMG_REG_URI}/${PROD_VER}/wordpress:6.2.1-apache-${ART_ARCH}

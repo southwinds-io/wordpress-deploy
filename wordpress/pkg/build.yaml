@@ -32,6 +32,16 @@ input:
         the kubernetes namespace where wordpress will be deploy
       default: "wordpress"
 
+    - name: MYSQL_STORAGE_GB
+      description: |
+        the capacity of the persistent volume for the mysql database (in Giga Bytes)
+      default: 20
+
+    - name: WORDPRESS_STORAGE_GB
+      description: |
+        the capacity of the persistent volume for the wordpress web site (in Giga Bytes)
+      default: 3
+
   secret:
     - name: IMG_REG_PASS
       description: |
